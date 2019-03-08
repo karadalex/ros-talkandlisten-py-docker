@@ -5,6 +5,8 @@ services:
     container_name: master
     ports:
       - "11311:11311"
+    volumes:
+      - roslogs:/root/.ros/log/
     command:
       - roscore
 
@@ -16,6 +18,8 @@ services:
     environment:
       - "ROS_HOSTNAME=talker"
       - "ROS_MASTER_URI=http://master:11311"
+    volumes:
+      - roslogs:/root/.ros/log/
     command: /bin/bash -c "source /ros_ws/devel/setup.bash && rosrun talker talker.py"
 
   listener:
@@ -26,4 +30,10 @@ services:
     environment:
       - "ROS_HOSTNAME=listener"
       - "ROS_MASTER_URI=http://master:11311"
+    volumes:
+      - roslogs:/root/.ros/log/
     command: /bin/bash -c "source /ros_ws/devel/setup.bash && rosrun listener listener.py"
+
+
+volumes:
+  roslogs:
