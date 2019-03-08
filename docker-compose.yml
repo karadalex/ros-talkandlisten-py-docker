@@ -1,7 +1,7 @@
 version: '2'
 services:
   master:
-    image: ros:kinetic
+    image: ros:melodic
     container_name: master
     ports:
       - "11311:11311"
@@ -9,21 +9,21 @@ services:
       - roscore
 
   talker:
-    image: ros:kinetic
+    build: ./talker
     container_name: talker
     depends_on:
       - master
     environment:
       - "ROS_HOSTNAME=talker"
       - "ROS_MASTER_URI=http://master:11311"
-    command: rostopic pub helloTopic std_msgs/String "hello world" --rate=0.5
+    command: /bin/bash -c "source /ros_ws/devel/setup.bash && rosrun talker talker.py"
 
   listener:
-    image: ros:kinetic
+    build: ./listener
     container_name: listener
     depends_on:
       - master
     environment:
       - "ROS_HOSTNAME=listener"
       - "ROS_MASTER_URI=http://master:11311"
-    command: rostopic echo helloTopic
+    command: /bin/bash -c "source /ros_ws/devel/setup.bash && rosrun listener listener.py"
